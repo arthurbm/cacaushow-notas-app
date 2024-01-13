@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF Processor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <style>
+      /* Style for the loading indicator */
+      #loading {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1000;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="container mx-auto">
+      <div class="bg-white p-8 rounded-lg shadow-md relative">
+        <h1 class="text-xl font-bold mb-4">Upload dos arquivos PDF</h1>
+        <form
+          hx-post="/process-pdf"
+          hx-encoding="multipart/form-data"
+          hx-target="#result"
+          hx-swap="outerHTML"
+          hx-indicator="#loading"
+        >
+          <input
+            type="file"
+            name="files"
+            multiple
+            class="border p-2 rounded w-full mb-4"
+          />
+          <button
+            type="submit"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Processar arquivos
+          </button>
+        </form>
+        <div class="loading-indicator" id="loading">Carregando...</div>
+
+        <div class="mt-4 max-h-96 overflow-y-auto">
+          <div id="result"></div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.body.addEventListener("htmx:beforeRequest", function () {
+        document.getElementById("loading").style.display = "block";
+      });
+      document.body.addEventListener("htmx:afterRequest", function () {
+        document.getElementById("loading").style.display = "none";
+      });
+    </script>
+  </body>
+</html>
