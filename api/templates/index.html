@@ -3,56 +3,212 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Processador PDF</title>
+    <title>Processador de Notas Fiscais - Cacau Show</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <style>
-      /* Style for the loading indicator */
-      #loading {
-        display: none;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1000;
+      .drop-zone {
+        border: 2px dashed #cbd5e1;
+        transition: all 0.3s ease;
+      }
+      .drop-zone.dragover {
+        border-color: #3b82f6;
+        background-color: #f0f9ff;
+      }
+      .loading-spinner {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.5s ease-in;
+      }
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+      table {
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+      th,
+      td {
+        border: 1px solid #e2e8f0;
+        padding: 12px;
+      }
+      th {
+        background-color: #f8fafc;
+        font-weight: 600;
+      }
+      tr:hover {
+        background-color: #f8fafc;
       }
     </style>
   </head>
-  <body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="container mx-auto">
-      <div class="bg-white p-8 rounded-lg shadow-md relative">
-        <h1 class="text-xl font-bold mb-4">Upload dos arquivos PDF</h1>
-        <form
-          hx-post="/process-pdf"
-          hx-encoding="multipart/form-data"
-          hx-target="#result"
-          hx-swap="outerHTML"
-          hx-indicator="#loading"
-        >
-          <input
-            type="file"
-            name="files"
-            multiple
-            class="border p-2 rounded w-full mb-4"
-          />
-          <button
-            type="submit"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Processar arquivos
-          </button>
-        </form>
-        <div class="loading-indicator" id="loading">Carregando...</div>
+  <body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">
+            Processador de Notas Fiscais
+          </h1>
+          <p class="text-gray-600">
+            Faça upload de múltiplos PDFs para processar notas fiscais
+          </p>
+        </div>
 
-        <div class="mt-4 max-h-96 overflow-y-auto">
-          <div id="result"></div>
+        <!-- Main Card -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+          <!-- Upload Form -->
+          <form
+            hx-post="/process-pdf"
+            hx-encoding="multipart/form-data"
+            hx-target="#result"
+            hx-swap="outerHTML"
+            hx-indicator="#loading"
+          >
+            <!-- File Drop Zone -->
+            <div
+              class="drop-zone rounded-lg p-8 mb-4 text-center cursor-pointer"
+              id="dropZone"
+            >
+              <input
+                type="file"
+                name="files"
+                id="fileInput"
+                multiple
+                class="hidden"
+                accept=".pdf"
+              />
+              <div class="space-y-4">
+                <i class="fas fa-file-pdf text-4xl text-blue-500"></i>
+                <div>
+                  <p class="text-lg font-medium text-gray-700">
+                    Arraste os arquivos PDF aqui
+                  </p>
+                  <p class="text-sm text-gray-500">ou clique para selecionar</p>
+                </div>
+                <div id="fileList" class="text-left mt-4"></div>
+              </div>
+            </div>
+
+            <!-- Process Button -->
+            <div class="flex justify-center">
+              <button
+                type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2"
+                id="submitButton"
+                disabled
+              >
+                <i class="fas fa-cogs"></i>
+                <span>Processar Arquivos</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Loading Indicator -->
+          <div
+            id="loading"
+            class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          >
+            <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+              <div class="loading-spinner text-blue-600 text-4xl mb-4">
+                <i class="fas fa-circle-notch"></i>
+              </div>
+              <p class="text-gray-700">Processando arquivos...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 fade-in">
+          <div id="result" class="overflow-x-auto"></div>
         </div>
       </div>
     </div>
+
     <script>
-      document.body.addEventListener("htmx:beforeRequest", function () {
-        document.getElementById("loading").style.display = "block";
+      const dropZone = document.getElementById("dropZone");
+      const fileInput = document.getElementById("fileInput");
+      const fileList = document.getElementById("fileList");
+      const submitButton = document.getElementById("submitButton");
+
+      // Handle drag and drop events
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
       });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+      });
+
+      function highlight(e) {
+        dropZone.classList.add("dragover");
+      }
+
+      function unhighlight(e) {
+        dropZone.classList.remove("dragover");
+      }
+
+      dropZone.addEventListener("drop", handleDrop, false);
+      dropZone.addEventListener("click", () => fileInput.click());
+      fileInput.addEventListener("change", handleFiles);
+
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        handleFiles({ target: { files: files } });
+      }
+
+      function handleFiles(e) {
+        const files = [...e.target.files];
+        updateFileList(files);
+        fileInput.files = e.target.files;
+        submitButton.disabled = files.length === 0;
+      }
+
+      function updateFileList(files) {
+        fileList.innerHTML = files
+          .map(
+            (file) => `
+            <div class="flex items-center space-x-2 text-sm text-gray-600 py-1">
+              <i class="fas fa-file-pdf text-blue-500"></i>
+              <span>${file.name}</span>
+            </div>
+          `
+          )
+          .join("");
+      }
+
+      // HTMX event handlers
+      document.body.addEventListener("htmx:beforeRequest", function () {
+        document.getElementById("loading").style.display = "flex";
+      });
+
       document.body.addEventListener("htmx:afterRequest", function () {
         document.getElementById("loading").style.display = "none";
       });
