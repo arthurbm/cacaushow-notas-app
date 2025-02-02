@@ -78,7 +78,7 @@
           <form
             hx-post="/process-pdf"
             hx-encoding="multipart/form-data"
-            hx-target="#result"
+            hx-target="#results-container"
             hx-swap="outerHTML"
             hx-indicator="#loading"
           >
@@ -136,8 +136,8 @@
         </div>
 
         <!-- Results Section -->
-        <div class="bg-white rounded-xl shadow-lg p-6 fade-in">
-          <div id="result" class="overflow-x-auto"></div>
+        <div id="results-container">
+          <div id="result"></div>
         </div>
       </div>
     </div>
@@ -147,6 +147,31 @@
       const fileInput = document.getElementById("fileInput");
       const fileList = document.getElementById("fileList");
       const submitButton = document.getElementById("submitButton");
+      const resultsContainer = document.getElementById("results-container");
+
+      function copyTableData() {
+        const table = document.querySelector("table");
+        if (!table) return;
+
+        const rows = Array.from(table.querySelectorAll("tr"));
+        const data = rows
+          .map((row) =>
+            Array.from(row.querySelectorAll("th,td"))
+              .map((cell) => cell.textContent.trim())
+              .join("\t")
+          )
+          .join("\n");
+
+        navigator.clipboard
+          .writeText(data)
+          .then(() => {
+            alert("Dados copiados para a área de transferência!");
+          })
+          .catch((err) => {
+            console.error("Erro ao copiar dados:", err);
+            alert("Erro ao copiar dados. Por favor, tente novamente.");
+          });
+      }
 
       // Handle drag and drop events
       ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
@@ -209,7 +234,7 @@
         document.getElementById("loading").style.display = "flex";
       });
 
-      document.body.addEventListener("htmx:afterRequest", function () {
+      document.body.addEventListener("htmx:afterRequest", function (event) {
         document.getElementById("loading").style.display = "none";
       });
     </script>

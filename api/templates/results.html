@@ -1,0 +1,32 @@
+{% if has_data %}
+<div id="results-container">
+  <div class="bg-white rounded-xl shadow-lg p-6 fade-in">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold text-gray-800">Resultados</h2>
+      <button
+        onclick="copyTableData()"
+        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2"
+      >
+        <i class="fas fa-copy"></i>
+        <span>Copiar dados</span>
+      </button>
+    </div>
+    <div id="result" class="overflow-x-auto">{{ table_html | safe }}</div>
+    {% if error_messages %}
+    <div class="text-red-500 mt-4">
+      {% for error in error_messages %} {{ error }}<br />
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% else %}
+<div id="results-container">
+  {% if error_messages %}
+  <div class="text-red-500">
+    {% for error in error_messages %} {{ error }}<br />
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endif %}
