@@ -113,7 +113,9 @@ def process_pdf_endpoint():
         master_df = aggregate_repeated_products(master_df)
         master_df = master_df.sort_values(by='DESCRIÇÃO DO PRODUTO / SERVIÇO')
         table_html = master_df.to_html(classes="table-auto w-full", index=False, header=True)
-        table_html = table_html.replace('<th>', '<th style="text-align: left;">')
+        table_html = table_html.replace('<th>', '<th style="text-align: left; background-color: #f5efe9; color: #341e0f;">')
+        table_html = table_html.replace('<tr>', '<tr class="border-b border-brown-100">')
+        table_html = table_html.replace('<td>', '<td style="border-color: #e2d5c8;">')
         
         return render_template('results.html',
                              has_data=True,

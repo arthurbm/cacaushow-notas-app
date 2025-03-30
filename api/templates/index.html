@@ -14,19 +14,46 @@
       href="{{ url_for('static', filename='css/styles.css') }}"
       rel="stylesheet"
     />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brown: {
+                50: "#f5efe9",
+                100: "#e8d8c8",
+                200: "#d1bca5",
+                300: "#b99c7d",
+                400: "#a27e5c",
+                500: "#8c6543",
+                600: "#7a4a2e",
+                700: "#4d2c15",
+                800: "#341e0f",
+                900: "#1d1109",
+              },
+              green: {
+                500: "#006633",
+                600: "#004d26",
+                700: "#003919",
+              },
+            },
+          },
+        },
+      };
+    </script>
   </head>
-  <body class="bg-gradient-to-br from-violet-50 to-blue-50 min-h-screen">
+  <body class="bg-cacau-gradient min-h-screen">
     <div class="container mx-auto px-4 py-8">
       <div class="max-w-4xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-8">
           <div class="flex justify-center items-center mb-4">
-            <i class="fas fa-file-invoice text-4xl text-violet-600 mr-3"></i>
-            <h1 class="text-3xl font-bold text-gray-800">
+            <i class="fas fa-mug-hot text-4xl text-brown-700 mr-3"></i>
+            <h1 class="text-3xl font-bold text-brown-800">
               Processador de Notas Fiscais
             </h1>
           </div>
-          <p class="text-gray-600 max-w-2xl mx-auto">
+          <p class="text-brown-700 max-w-2xl mx-auto">
             Faça upload de múltiplos PDFs para extrair e agregar dados de
             produtos de suas notas fiscais
           </p>
@@ -34,23 +61,23 @@
 
         <!-- Main Card -->
         <div
-          class="bg-white rounded-xl shadow-lg p-8 mb-6 border border-gray-100"
+          class="bg-white rounded-xl shadow-lg p-8 mb-6 border border-brown-100"
         >
           <!-- Steps -->
           <div class="mb-8 hidden sm:block">
             <div class="flex justify-between">
               <div class="text-center">
                 <div
-                  class="w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-violet-100 text-violet-600 mb-2"
+                  class="w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-brown-100 text-brown-700 mb-2"
                 >
                   <i class="fas fa-upload"></i>
                 </div>
-                <p class="text-sm font-medium text-gray-700">Upload de PDFs</p>
+                <p class="text-sm font-medium text-brown-700">Upload de PDFs</p>
               </div>
               <div class="flex-1 flex items-center justify-center">
-                <div class="h-1 w-full bg-gray-200">
+                <div class="h-1 w-full bg-brown-100">
                   <div
-                    class="h-1 bg-violet-500"
+                    class="h-1 bg-brown-700"
                     style="width: 0%"
                     id="progress-bar"
                   ></div>
@@ -68,9 +95,9 @@
                 </p>
               </div>
               <div class="flex-1 flex items-center justify-center">
-                <div class="h-1 w-full bg-gray-200">
+                <div class="h-1 w-full bg-brown-100">
                   <div
-                    class="h-1 bg-violet-500"
+                    class="h-1 bg-brown-700"
                     style="width: 0%"
                     id="progress-bar-2"
                   ></div>
@@ -100,7 +127,7 @@
           >
             <!-- File Drop Zone -->
             <div
-              class="drop-zone rounded-lg p-10 mb-6 text-center cursor-pointer border-2 border-dashed border-gray-300 transition-all hover:border-violet-400"
+              class="drop-zone rounded-lg p-10 mb-6 text-center cursor-pointer border-2 border-dashed border-brown-200 transition-all hover:border-brown-400"
               id="dropZone"
             >
               <input
@@ -112,12 +139,14 @@
                 accept=".pdf"
               />
               <div class="space-y-4">
-                <i class="fas fa-file-pdf text-5xl text-violet-500"></i>
+                <i class="fas fa-file-pdf text-5xl text-brown-600"></i>
                 <div>
-                  <p class="text-lg font-medium text-gray-700">
+                  <p class="text-lg font-medium text-brown-700">
                     Arraste os arquivos PDF aqui
                   </p>
-                  <p class="text-sm text-gray-500">ou clique para selecionar</p>
+                  <p class="text-sm text-brown-500">
+                    ou clique para selecionar
+                  </p>
                 </div>
                 <div
                   id="fileList"
@@ -128,7 +157,7 @@
 
             <!-- File Count and Size Info -->
             <div
-              class="flex justify-between items-center mb-6 text-sm text-gray-600"
+              class="flex justify-between items-center mb-6 text-sm text-brown-600"
               id="fileInfo"
             >
               <span id="fileCount">0 arquivos selecionados</span>
@@ -139,7 +168,7 @@
             <div class="flex justify-center">
               <button
                 type="submit"
-                class="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                class="bg-brown-700 hover:bg-brown-800 text-white font-semibold py-3 px-8 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 id="submitButton"
                 disabled
               >
@@ -150,12 +179,12 @@
           </form>
 
           <!-- Tips Section -->
-          <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+          <div class="mt-8 p-4 bg-brown-50 rounded-lg">
             <div class="flex items-start">
-              <i class="fas fa-lightbulb text-amber-500 mt-1 mr-3"></i>
+              <i class="fas fa-lightbulb text-yellow-600 mt-1 mr-3"></i>
               <div>
-                <h3 class="font-medium text-gray-800 mb-1">Dicas:</h3>
-                <ul class="text-sm text-gray-600 space-y-1">
+                <h3 class="font-medium text-brown-800 mb-1">Dicas:</h3>
+                <ul class="text-sm text-brown-600 space-y-1">
                   <li>• Formatos suportados: apenas PDF</li>
                   <li>
                     • Certifique-se que os PDFs contêm tabelas de produtos
@@ -175,16 +204,16 @@
             class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           >
             <div class="bg-white p-8 rounded-lg shadow-xl text-center w-80">
-              <div class="loading-spinner text-violet-600 text-4xl mb-4">
+              <div class="loading-spinner text-brown-700 text-4xl mb-4">
                 <i class="fas fa-circle-notch"></i>
               </div>
-              <p class="text-gray-700 font-medium">Processando arquivos...</p>
-              <p class="text-sm text-gray-500 mt-2">
+              <p class="text-brown-800 font-medium">Processando arquivos...</p>
+              <p class="text-sm text-brown-500 mt-2">
                 Isso pode levar alguns segundos
               </p>
-              <div class="w-full bg-gray-200 rounded-full h-2.5 mt-4">
+              <div class="w-full bg-brown-100 rounded-full h-2.5 mt-4">
                 <div
-                  class="bg-violet-600 h-2.5 rounded-full animate-pulse w-full"
+                  class="bg-brown-600 h-2.5 rounded-full animate-pulse w-full"
                 ></div>
               </div>
             </div>

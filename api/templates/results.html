@@ -5,24 +5,24 @@
       class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3"
     >
       <div>
-        <h2 class="text-xl font-semibold text-gray-800 mb-1">
+        <h2 class="text-xl font-semibold text-brown-800 mb-1">
           Resultados do Processamento
         </h2>
-        <p class="text-sm text-gray-500">
+        <p class="text-sm text-brown-600">
           Os dados foram extraídos e agregados com sucesso
         </p>
       </div>
       <div class="flex space-x-2">
         <button
           onclick="exportTableToCSV()"
-          class="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2"
+          class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2"
         >
           <i class="fas fa-download"></i>
           <span>Exportar CSV</span>
         </button>
         <button
           onclick="copyTableData()"
-          class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2"
+          class="bg-brown-600 hover:bg-brown-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2"
         >
           <i class="fas fa-copy"></i>
           <span>Copiar dados</span>
@@ -30,9 +30,9 @@
       </div>
     </div>
     <div
-      class="bg-gray-50 p-2 rounded mb-4 text-sm text-gray-500 flex items-center"
+      class="bg-brown-50 p-2 rounded mb-4 text-sm text-brown-600 flex items-center"
     >
-      <i class="fas fa-search mr-2 text-gray-400"></i>
+      <i class="fas fa-search mr-2 text-brown-400"></i>
       <input
         type="text"
         id="tableSearch"
@@ -43,11 +43,11 @@
     </div>
     <div
       id="result"
-      class="overflow-x-auto max-h-[500px] shadow-sm rounded border border-gray-100"
+      class="overflow-x-auto max-h-[500px] shadow-sm rounded border border-brown-100"
     >
       {{ table_html | safe }}
     </div>
-    <div class="text-xs text-gray-500 mt-3 text-right">
+    <div class="text-xs text-brown-500 mt-3 text-right">
       <span id="rowCount"></span>
     </div>
     {% if error_messages %}
@@ -96,7 +96,7 @@
     <div class="mt-4 text-center">
       <button
         onclick="window.location.reload()"
-        class="mt-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition"
+        class="mt-2 bg-brown-200 hover:bg-brown-300 text-brown-800 font-medium py-2 px-4 rounded-lg transition"
       >
         <i class="fas fa-redo mr-1"></i> Tentar novamente
       </button>

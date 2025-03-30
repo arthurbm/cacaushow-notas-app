@@ -43,11 +43,11 @@ function copyTableData() {
       );
       const originalText = copyBtn.innerHTML;
       copyBtn.innerHTML = '<i class="fas fa-check"></i><span>Copiado!</span>';
-      copyBtn.classList.replace("bg-green-600", "bg-green-700");
+      copyBtn.classList.replace("bg-brown-600", "bg-brown-700");
 
       setTimeout(() => {
         copyBtn.innerHTML = originalText;
-        copyBtn.classList.replace("bg-green-700", "bg-green-600");
+        copyBtn.classList.replace("bg-brown-700", "bg-brown-600");
       }, 2000);
     })
     .catch((err) => {
@@ -128,10 +128,10 @@ function updateFileList(files) {
   fileList.innerHTML = files
     .map(
       (file) => `
-      <div class="flex items-center space-x-2 text-sm text-gray-600 py-1.5 px-2 rounded hover:bg-gray-50">
-        <i class="fas fa-file-pdf text-violet-500"></i>
+      <div class="flex items-center space-x-2 text-sm text-brown-600 py-1.5 px-2 rounded hover:bg-brown-50">
+        <i class="fas fa-file-pdf text-brown-600"></i>
         <span class="flex-1 truncate" title="${file.name}">${file.name}</span>
-        <span class="text-gray-400 text-xs">${formatFileSize(file.size)}</span>
+        <span class="text-brown-400 text-xs">${formatFileSize(file.size)}</span>
       </div>
     `
     )
@@ -162,9 +162,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("loading").style.display = "flex";
 
     // Update progress indicators
-    processStep.classList.replace("bg-gray-100", "bg-violet-100");
-    processStep.classList.replace("text-gray-400", "text-violet-600");
-    processText.classList.replace("text-gray-400", "text-gray-700");
+    processStep.classList.replace("bg-gray-100", "bg-brown-100");
+    processStep.classList.replace("text-gray-400", "text-brown-600");
+    processText.classList.replace("text-gray-400", "text-brown-700");
     progressBar.style.width = "100%";
     progressBar2.style.width = "50%";
   });
@@ -173,9 +173,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("loading").style.display = "none";
 
     // Update progress indicators
-    resultsStep.classList.replace("bg-gray-100", "bg-violet-100");
-    resultsStep.classList.replace("text-gray-400", "text-violet-600");
-    resultsText.classList.replace("text-gray-400", "text-gray-700");
+    resultsStep.classList.replace("bg-gray-100", "bg-brown-100");
+    resultsStep.classList.replace("text-gray-400", "text-brown-600");
+    resultsText.classList.replace("text-gray-400", "text-brown-700");
     progressBar2.style.width = "100%";
 
     // Scroll to results

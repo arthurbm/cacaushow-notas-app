@@ -1,11 +1,23 @@
+:root {
+  --cacau-primary: #4d2c15;
+  --cacau-primary-light: #7a4a2e;
+  --cacau-primary-dark: #341e0f;
+  --cacau-secondary: #006633;
+  --cacau-secondary-light: #008842;
+  --cacau-secondary-dark: #004d26;
+  --cacau-accent: #f5efe9;
+  --cacau-accent-light: #fcf9f6;
+  --cacau-accent-dark: #e8d8c8;
+}
+
 .drop-zone {
-  border: 2px dashed #cbd5e1;
+  border: 2px dashed #d1bca5;
   transition: all 0.3s ease;
 }
 
 .drop-zone.dragover {
-  border-color: #7c3aed;
-  background-color: #f5f3ff;
+  border-color: var(--cacau-primary);
+  background-color: var(--cacau-accent);
 }
 
 .loading-spinner {
@@ -42,25 +54,26 @@ table {
 
 th,
 td {
-  border: 1px solid #e2e8f0;
+  border: 1px solid #e2d5c8;
   padding: 12px;
   text-align: left;
 }
 
 th {
-  background-color: #f1f5f9;
+  background-color: var(--cacau-accent);
   font-weight: 600;
   position: sticky;
   top: 0;
   z-index: 10;
+  color: var(--cacau-primary-dark);
 }
 
 tr:nth-child(even) {
-  background-color: #f8fafc;
+  background-color: #fcf9f6;
 }
 
 tr:hover {
-  background-color: #eef2ff;
+  background-color: #f0e5d8;
 }
 
 .tooltip {
@@ -71,7 +84,7 @@ tr:hover {
 .tooltip .tooltip-text {
   visibility: hidden;
   width: 200px;
-  background-color: #1e293b;
+  background-color: var(--cacau-primary-dark);
   color: white;
   text-align: center;
   border-radius: 6px;
@@ -88,4 +101,37 @@ tr:hover {
 .tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+/* Custom Theme Classes */
+.bg-cacau-gradient {
+  background: linear-gradient(to bottom right, var(--cacau-accent-light), #f0e5d8);
+}
+
+.bg-cacau-primary {
+  background-color: var(--cacau-primary);
+}
+
+.bg-cacau-secondary {
+  background-color: var(--cacau-secondary);
+}
+
+.bg-cacau-accent {
+  background-color: var(--cacau-accent);
+}
+
+.text-cacau-primary {
+  color: var(--cacau-primary);
+}
+
+.text-cacau-secondary {
+  color: var(--cacau-secondary);
+}
+
+.border-cacau-primary {
+  border-color: var(--cacau-primary);
+}
+
+.border-cacau-secondary {
+  border-color: var(--cacau-secondary);
 } 
