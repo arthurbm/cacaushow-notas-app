@@ -86,6 +86,60 @@ function exportTableToCSV() {
   document.body.removeChild(link);
 }
 
+// Reset the form to its initial state
+function resetForm() {
+  // Clear file input
+  if (fileInput) {
+    fileInput.value = "";
+  }
+
+  // Clear file list
+  if (fileList) {
+    fileList.innerHTML = "";
+  }
+
+  // Reset file count and size
+  if (fileCount) {
+    fileCount.textContent = "0 arquivos selecionados";
+  }
+
+  if (totalSize) {
+    totalSize.textContent = "0 KB";
+  }
+
+  // Disable submit button
+  if (submitButton) {
+    submitButton.disabled = true;
+  }
+
+  // Reset progress bars
+  if (progressBar) {
+    progressBar.style.width = "0%";
+  }
+
+  if (progressBar2) {
+    progressBar2.style.width = "0%";
+  }
+
+  // Reset step indicators
+  if (processStep && processText) {
+    processStep.className =
+      "w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-gray-100 text-gray-400 mb-2";
+    processText.className = "text-sm font-medium text-gray-400";
+  }
+
+  if (resultsStep && resultsText) {
+    resultsStep.className =
+      "w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-gray-100 text-gray-400 mb-2";
+    resultsText.className = "text-sm font-medium text-gray-400";
+  }
+
+  // Clear results container
+  if (resultsContainer) {
+    resultsContainer.innerHTML = '<div id="result"></div>';
+  }
+}
+
 // File Upload Handling
 function preventDefaults(e) {
   e.preventDefault();
@@ -140,6 +194,9 @@ function updateFileList(files) {
 
 // Event Listeners
 document.addEventListener("DOMContentLoaded", () => {
+  // Reset form on page load
+  resetForm();
+
   // Drag and drop events
   ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
     dropZone.addEventListener(eventName, preventDefaults, false);
@@ -184,8 +241,17 @@ document.addEventListener("DOMContentLoaded", () => {
       resultsElement.scrollIntoView({ behavior: "smooth" });
     }
   });
+
+  // Check if we're returning from results page via URL params
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has("reset") && urlParams.get("reset") === "true") {
+    resetForm();
+    // Clean up the URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
 });
 
 // Expose functions to global scope for HTML onclick attributes
 window.copyTableData = copyTableData;
 window.exportTableToCSV = exportTableToCSV;
+window.resetForm = resetForm;

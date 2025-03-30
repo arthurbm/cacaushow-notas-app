@@ -67,6 +67,17 @@
       </div>
     </div>
     {% endif %}
+
+    <!-- Restart Button -->
+    <div class="mt-8 border-t border-brown-100 pt-4 text-center">
+      <button
+        onclick="window.location.href='/?reset=true'"
+        class="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-6 rounded-lg transition flex items-center space-x-2 mx-auto"
+      >
+        <i class="fas fa-redo-alt"></i>
+        <span>Processar Novos Arquivos</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -95,7 +106,7 @@
     </div>
     <div class="mt-4 text-center">
       <button
-        onclick="window.location.reload()"
+        onclick="window.location.href='/?reset=true'"
         class="mt-2 bg-brown-200 hover:bg-brown-300 text-brown-800 font-medium py-2 px-4 rounded-lg transition"
       >
         <i class="fas fa-redo mr-1"></i> Tentar novamente
