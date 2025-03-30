@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string, render_template
+from flask import Flask, request, render_template
 import os
 import logging
 import pandas as pd
@@ -12,7 +12,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 def split_rows(df): 
