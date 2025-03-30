@@ -1,31 +1,156 @@
 {% if has_data %}
 <div id="results-container">
   <div class="bg-white rounded-xl shadow-lg p-6 fade-in">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold text-gray-800">Resultados</h2>
-      <button
-        onclick="copyTableData()"
-        class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2"
-      >
-        <i class="fas fa-copy"></i>
-        <span>Copiar dados</span>
-      </button>
+    <div
+      class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3"
+    >
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-1">
+          Resultados do Processamento
+        </h2>
+        <p class="text-sm text-gray-500">
+          Os dados foram extraídos e agregados com sucesso
+        </p>
+      </div>
+      <div class="flex space-x-2">
+        <button
+          onclick="exportTableToCSV()"
+          class="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2"
+        >
+          <i class="fas fa-download"></i>
+          <span>Exportar CSV</span>
+        </button>
+        <button
+          onclick="copyTableData()"
+          class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2"
+        >
+          <i class="fas fa-copy"></i>
+          <span>Copiar dados</span>
+        </button>
+      </div>
     </div>
-    <div id="result" class="overflow-x-auto">{{ table_html | safe }}</div>
+    <div
+      class="bg-gray-50 p-2 rounded mb-4 text-sm text-gray-500 flex items-center"
+    >
+      <i class="fas fa-search mr-2 text-gray-400"></i>
+      <input
+        type="text"
+        id="tableSearch"
+        placeholder="Buscar produtos..."
+        class="flex-1 bg-transparent border-none focus:outline-none p-1"
+        oninput="filterTable()"
+      />
+    </div>
+    <div
+      id="result"
+      class="overflow-x-auto max-h-[500px] shadow-sm rounded border border-gray-100"
+    >
+      {{ table_html | safe }}
+    </div>
+    <div class="text-xs text-gray-500 mt-3 text-right">
+      <span id="rowCount"></span>
+    </div>
     {% if error_messages %}
-    <div class="text-red-500 mt-4">
-      {% for error in error_messages %} {{ error }}<br />
-      {% endfor %}
+    <div class="mt-4 bg-red-50 border-l-4 border-red-500 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <i class="fas fa-exclamation-circle text-red-500"></i>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Atenção:</h3>
+          <div class="text-sm text-red-700 mt-2">
+            {% for error in error_messages %}
+            <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
     </div>
     {% endif %}
   </div>
 </div>
+
+<script>
+  // Update row count
+  function updateRowCount() {
+    const table = document.querySelector("table");
+    if (!table) return;
+
+    const rows = Array.from(table.querySelectorAll("tbody tr"));
+    const visibleRows = rows.filter((row) => row.style.display !== "none");
+    const rowCountElement = document.getElementById("rowCount");
+
+    if (rowCountElement) {
+      rowCountElement.textContent = `Exibindo ${visibleRows.length} de ${rows.length} produtos`;
+    }
+  }
+
+  // Filter table based on search input
+  function filterTable() {
+    const input = document.getElementById("tableSearch");
+    const filter = input.value.toUpperCase();
+    const table = document.querySelector("table");
+
+    if (!table) return;
+
+    const rows = table.querySelectorAll("tbody tr");
+    let hasVisibleRows = false;
+
+    rows.forEach((row) => {
+      const cells = row.querySelectorAll("td");
+      let shouldShow = false;
+
+      cells.forEach((cell) => {
+        if (cell.textContent.toUpperCase().indexOf(filter) > -1) {
+          shouldShow = true;
+        }
+      });
+
+      if (shouldShow) {
+        row.style.display = "";
+        hasVisibleRows = true;
+      } else {
+        row.style.display = "none";
+      }
+    });
+
+    updateRowCount();
+  }
+
+  // Initialize
+  document.addEventListener("DOMContentLoaded", function () {
+    updateRowCount();
+  });
+</script>
 {% else %}
 <div id="results-container">
   {% if error_messages %}
-  <div class="text-red-500">
-    {% for error in error_messages %} {{ error }}<br />
-    {% endfor %}
+  <div class="bg-white rounded-xl shadow-lg p-6 fade-in">
+    <div class="bg-red-50 border-l-4 border-red-500 p-4">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <i class="fas fa-exclamation-circle text-red-500"></i>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">
+            Ocorreram erros no processamento:
+          </h3>
+          <div class="text-sm text-red-700 mt-2">
+            {% for error in error_messages %}
+            <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 text-center">
+      <button
+        onclick="window.location.reload()"
+        class="mt-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition"
+      >
+        <i class="fas fa-redo mr-1"></i> Tentar novamente
+      </button>
+    </div>
   </div>
   {% endif %}
 </div>

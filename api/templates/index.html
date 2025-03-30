@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org"></script>
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
       rel="stylesheet"
     />
     <style>
@@ -16,8 +16,8 @@
         transition: all 0.3s ease;
       }
       .drop-zone.dragover {
-        border-color: #3b82f6;
-        background-color: #f0f9ff;
+        border-color: #7c3aed;
+        background-color: #f5f3ff;
       }
       .loading-spinner {
         animation: spin 1s linear infinite;
@@ -44,36 +44,128 @@
       table {
         border-collapse: separate;
         border-spacing: 0;
+        width: 100%;
       }
       th,
       td {
         border: 1px solid #e2e8f0;
         padding: 12px;
+        text-align: left;
       }
       th {
-        background-color: #f8fafc;
+        background-color: #f1f5f9;
         font-weight: 600;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      tr:nth-child(even) {
+        background-color: #f8fafc;
       }
       tr:hover {
-        background-color: #f8fafc;
+        background-color: #eef2ff;
+      }
+      .tooltip {
+        position: relative;
+        display: inline-block;
+      }
+      .tooltip .tooltip-text {
+        visibility: hidden;
+        width: 200px;
+        background-color: #1e293b;
+        color: white;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -100px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .tooltip:hover .tooltip-text {
+        visibility: visible;
+        opacity: 1;
       }
     </style>
   </head>
-  <body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen">
+  <body class="bg-gradient-to-br from-violet-50 to-blue-50 min-h-screen">
     <div class="container mx-auto px-4 py-8">
       <div class="max-w-4xl mx-auto">
         <!-- Header -->
         <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-gray-800 mb-2">
-            Processador de Notas Fiscais
-          </h1>
-          <p class="text-gray-600">
-            Faça upload de múltiplos PDFs para processar notas fiscais
+          <div class="flex justify-center items-center mb-4">
+            <i class="fas fa-file-invoice text-4xl text-violet-600 mr-3"></i>
+            <h1 class="text-3xl font-bold text-gray-800">
+              Processador de Notas Fiscais
+            </h1>
+          </div>
+          <p class="text-gray-600 max-w-2xl mx-auto">
+            Faça upload de múltiplos PDFs para extrair e agregar dados de
+            produtos de suas notas fiscais
           </p>
         </div>
 
         <!-- Main Card -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+        <div
+          class="bg-white rounded-xl shadow-lg p-8 mb-6 border border-gray-100"
+        >
+          <!-- Steps -->
+          <div class="mb-8 hidden sm:block">
+            <div class="flex justify-between">
+              <div class="text-center">
+                <div
+                  class="w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-violet-100 text-violet-600 mb-2"
+                >
+                  <i class="fas fa-upload"></i>
+                </div>
+                <p class="text-sm font-medium text-gray-700">Upload de PDFs</p>
+              </div>
+              <div class="flex-1 flex items-center justify-center">
+                <div class="h-1 w-full bg-gray-200">
+                  <div
+                    class="h-1 bg-violet-500"
+                    style="width: 0%"
+                    id="progress-bar"
+                  ></div>
+                </div>
+              </div>
+              <div class="text-center">
+                <div
+                  class="w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-gray-100 text-gray-400 mb-2"
+                  id="process-step"
+                >
+                  <i class="fas fa-cogs"></i>
+                </div>
+                <p class="text-sm font-medium text-gray-400" id="process-text">
+                  Processamento
+                </p>
+              </div>
+              <div class="flex-1 flex items-center justify-center">
+                <div class="h-1 w-full bg-gray-200">
+                  <div
+                    class="h-1 bg-violet-500"
+                    style="width: 0%"
+                    id="progress-bar-2"
+                  ></div>
+                </div>
+              </div>
+              <div class="text-center">
+                <div
+                  class="w-10 h-10 mx-auto flex items-center justify-center rounded-full bg-gray-100 text-gray-400 mb-2"
+                  id="results-step"
+                >
+                  <i class="fas fa-table"></i>
+                </div>
+                <p class="text-sm font-medium text-gray-400" id="results-text">
+                  Resultados
+                </p>
+              </div>
+            </div>
+          </div>
+
           <!-- Upload Form -->
           <form
             hx-post="/process-pdf"
@@ -84,7 +176,7 @@
           >
             <!-- File Drop Zone -->
             <div
-              class="drop-zone rounded-lg p-8 mb-4 text-center cursor-pointer"
+              class="drop-zone rounded-lg p-10 mb-6 text-center cursor-pointer border-2 border-dashed border-gray-300 transition-all hover:border-violet-400"
               id="dropZone"
             >
               <input
@@ -96,22 +188,34 @@
                 accept=".pdf"
               />
               <div class="space-y-4">
-                <i class="fas fa-file-pdf text-4xl text-blue-500"></i>
+                <i class="fas fa-file-pdf text-5xl text-violet-500"></i>
                 <div>
                   <p class="text-lg font-medium text-gray-700">
                     Arraste os arquivos PDF aqui
                   </p>
                   <p class="text-sm text-gray-500">ou clique para selecionar</p>
                 </div>
-                <div id="fileList" class="text-left mt-4"></div>
+                <div
+                  id="fileList"
+                  class="text-left mt-4 max-h-40 overflow-y-auto"
+                ></div>
               </div>
+            </div>
+
+            <!-- File Count and Size Info -->
+            <div
+              class="flex justify-between items-center mb-6 text-sm text-gray-600"
+              id="fileInfo"
+            >
+              <span id="fileCount">0 arquivos selecionados</span>
+              <span id="totalSize">0 KB</span>
             </div>
 
             <!-- Process Button -->
             <div class="flex justify-center">
               <button
                 type="submit"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2"
+                class="bg-violet-600 hover:bg-violet-700 text-white font-semibold py-3 px-8 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 id="submitButton"
                 disabled
               >
@@ -121,16 +225,44 @@
             </div>
           </form>
 
+          <!-- Tips Section -->
+          <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+            <div class="flex items-start">
+              <i class="fas fa-lightbulb text-amber-500 mt-1 mr-3"></i>
+              <div>
+                <h3 class="font-medium text-gray-800 mb-1">Dicas:</h3>
+                <ul class="text-sm text-gray-600 space-y-1">
+                  <li>• Formatos suportados: apenas PDF</li>
+                  <li>
+                    • Certifique-se que os PDFs contêm tabelas de produtos
+                  </li>
+                  <li>
+                    • O processamento pode demorar alguns segundos dependendo da
+                    quantidade de arquivos
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
           <!-- Loading Indicator -->
           <div
             id="loading"
             class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           >
-            <div class="bg-white p-6 rounded-lg shadow-xl text-center">
-              <div class="loading-spinner text-blue-600 text-4xl mb-4">
+            <div class="bg-white p-8 rounded-lg shadow-xl text-center w-80">
+              <div class="loading-spinner text-violet-600 text-4xl mb-4">
                 <i class="fas fa-circle-notch"></i>
               </div>
-              <p class="text-gray-700">Processando arquivos...</p>
+              <p class="text-gray-700 font-medium">Processando arquivos...</p>
+              <p class="text-sm text-gray-500 mt-2">
+                Isso pode levar alguns segundos
+              </p>
+              <div class="w-full bg-gray-200 rounded-full h-2.5 mt-4">
+                <div
+                  class="bg-violet-600 h-2.5 rounded-full animate-pulse w-full"
+                ></div>
+              </div>
             </div>
           </div>
         </div>
@@ -148,6 +280,23 @@
       const fileList = document.getElementById("fileList");
       const submitButton = document.getElementById("submitButton");
       const resultsContainer = document.getElementById("results-container");
+      const fileCount = document.getElementById("fileCount");
+      const totalSize = document.getElementById("totalSize");
+      const progressBar = document.getElementById("progress-bar");
+      const progressBar2 = document.getElementById("progress-bar-2");
+      const processStep = document.getElementById("process-step");
+      const processText = document.getElementById("process-text");
+      const resultsStep = document.getElementById("results-step");
+      const resultsText = document.getElementById("results-text");
+
+      // Function to format file size
+      function formatFileSize(bytes) {
+        if (bytes === 0) return "0 Bytes";
+        const k = 1024;
+        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+      }
 
       function copyTableData() {
         const table = document.querySelector("table");
@@ -165,12 +314,53 @@
         navigator.clipboard
           .writeText(data)
           .then(() => {
-            alert("Dados copiados para a área de transferência!");
+            const copyBtn = document.querySelector(
+              "button[onclick='copyTableData()']"
+            );
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML =
+              '<i class="fas fa-check"></i><span>Copiado!</span>';
+            copyBtn.classList.replace("bg-green-600", "bg-green-700");
+
+            setTimeout(() => {
+              copyBtn.innerHTML = originalText;
+              copyBtn.classList.replace("bg-green-700", "bg-green-600");
+            }, 2000);
           })
           .catch((err) => {
             console.error("Erro ao copiar dados:", err);
             alert("Erro ao copiar dados. Por favor, tente novamente.");
           });
+      }
+
+      // Export to CSV
+      function exportTableToCSV() {
+        const table = document.querySelector("table");
+        if (!table) return;
+
+        const rows = Array.from(table.querySelectorAll("tr"));
+        const csvContent = rows
+          .map((row) =>
+            Array.from(row.querySelectorAll("th,td"))
+              .map((cell) => `"${cell.textContent.trim()}"`)
+              .join(",")
+          )
+          .join("\n");
+
+        const blob = new Blob([csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const date = new Date().toISOString().split("T")[0];
+
+        link.setAttribute("href", url);
+        link.setAttribute("download", `produtos-nota-fiscal-${date}.csv`);
+        link.style.visibility = "hidden";
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
 
       // Handle drag and drop events
@@ -214,15 +404,31 @@
         updateFileList(files);
         fileInput.files = e.target.files;
         submitButton.disabled = files.length === 0;
+
+        // Update file count and size
+        fileCount.textContent = `${files.length} arquivo${
+          files.length !== 1 ? "s" : ""
+        } selecionado${files.length !== 1 ? "s" : ""}`;
+
+        const totalBytes = files.reduce((acc, file) => acc + file.size, 0);
+        totalSize.textContent = formatFileSize(totalBytes);
+
+        // Update progress bar
+        progressBar.style.width = "100%";
       }
 
       function updateFileList(files) {
         fileList.innerHTML = files
           .map(
             (file) => `
-            <div class="flex items-center space-x-2 text-sm text-gray-600 py-1">
-              <i class="fas fa-file-pdf text-blue-500"></i>
-              <span>${file.name}</span>
+            <div class="flex items-center space-x-2 text-sm text-gray-600 py-1.5 px-2 rounded hover:bg-gray-50">
+              <i class="fas fa-file-pdf text-violet-500"></i>
+              <span class="flex-1 truncate" title="${file.name}">${
+              file.name
+            }</span>
+              <span class="text-gray-400 text-xs">${formatFileSize(
+                file.size
+              )}</span>
             </div>
           `
           )
@@ -232,10 +438,29 @@
       // HTMX event handlers
       document.body.addEventListener("htmx:beforeRequest", function () {
         document.getElementById("loading").style.display = "flex";
+
+        // Update progress indicators
+        processStep.classList.replace("bg-gray-100", "bg-violet-100");
+        processStep.classList.replace("text-gray-400", "text-violet-600");
+        processText.classList.replace("text-gray-400", "text-gray-700");
+        progressBar.style.width = "100%";
+        progressBar2.style.width = "50%";
       });
 
       document.body.addEventListener("htmx:afterRequest", function (event) {
         document.getElementById("loading").style.display = "none";
+
+        // Update progress indicators
+        resultsStep.classList.replace("bg-gray-100", "bg-violet-100");
+        resultsStep.classList.replace("text-gray-400", "text-violet-600");
+        resultsText.classList.replace("text-gray-400", "text-gray-700");
+        progressBar2.style.width = "100%";
+
+        // Scroll to results
+        const resultsElement = document.getElementById("results-container");
+        if (resultsElement) {
+          resultsElement.scrollIntoView({ behavior: "smooth" });
+        }
       });
     </script>
   </body>
